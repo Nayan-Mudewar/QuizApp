@@ -1,6 +1,7 @@
 package com.github.com.Nayan_Mudewar.Online.Quiz.App.service;
 
 import com.github.com.Nayan_Mudewar.Online.Quiz.App.dto.AnswerResult;
+import com.github.com.Nayan_Mudewar.Online.Quiz.App.dto.AttemptHistoryResponse;
 import com.github.com.Nayan_Mudewar.Online.Quiz.App.dto.QuizSubmitRequest;
 import com.github.com.Nayan_Mudewar.Online.Quiz.App.dto.QuizSubmitResponse;
 import com.github.com.Nayan_Mudewar.Online.Quiz.App.entity.Attempt;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -113,5 +115,31 @@ public class AttemptService {
 
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AttemptHistoryResponse> getUserAttempts() {
+        User user = getAuthenticatedUser();
+
+        List<Attempt> attempts = attemptRepository.findByUserIdOrderByCompletedAtDesc(user.getId());
+
+        return attempts.stream()
+                .map(this::convertToHistoryDto)
+                .collect(Collectors.toList());
+    }
+
+    private AttemptHistoryResponse convertToHistoryDto(Attempt attempt) {
+        double percentage = (attempt.getScore() * 100.0) / 10;
+
+        return AttemptHistoryResponse.builder()
+                .attemptId(attempt.getId())
+                .quizId(attempt.getQuiz().getId())
+                .quizTitle(attempt.getQuiz().getTitle())
+                .quizCategory(attempt.getQuiz().getCategory())
+                .score(attempt.getScore())
+                .totalQuestions(10)
+                .percentage(percentage)
+                .completedAt(attempt.getCompletedAt())
+                .build();
     }
 }
