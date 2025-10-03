@@ -13,7 +13,19 @@ import java.util.List;
 @Repository
 public interface AttemptRepository extends JpaRepository<Attempt, Long> {
     List<Attempt> findByUserIdOrderByCompletedAtDesc(Long userId);
-    @Query("SELECT a FROM Attempt a WHERE a.quiz.id = :quizId ORDER BY a.score DESC, a.completedAt ASC")
-    List<Attempt> findTopScoresByQuizId(@Param("quizId") Long quizId);
+    @Query(value = """
+        SELECT a.* FROM attempts a
+        INNER JOIN (
+            SELECT user_id, MAX(score) as max_score, MIN(completed_at) as earliest_time
+            FROM attempts
+            WHERE quiz_id = :quizId
+            GROUP BY user_id
+        ) best ON a.user_id = best.user_id 
+                AND a.score = best.max_score 
+                AND a.completed_at = best.earliest_time
+        WHERE a.quiz_id = :quizId
+        ORDER BY a.score DESC, a.completed_at ASC
+        """, nativeQuery = true)
+    List<Attempt> findBestAttemptPerUserByQuizId(@Param("quizId") Long quizId);
 }
 
