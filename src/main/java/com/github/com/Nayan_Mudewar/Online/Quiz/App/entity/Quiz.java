@@ -2,8 +2,7 @@ package com.github.com.Nayan_Mudewar.Online.Quiz.App.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,11 +17,15 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String category;
 
+    @Column(nullable = false)
     private String title;
 
-    // Bidirectional mapping to questions
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Question> questions;
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    private List<Attempt> attempts = new ArrayList<>();
 }

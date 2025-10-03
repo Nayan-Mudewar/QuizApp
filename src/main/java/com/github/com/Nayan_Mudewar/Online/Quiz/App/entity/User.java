@@ -1,8 +1,9 @@
 package com.github.com.Nayan_Mudewar.Online.Quiz.App.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -16,12 +17,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
-}
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Attempt> attempts = new ArrayList<>();
+}

@@ -2,7 +2,6 @@ package com.github.com.Nayan_Mudewar.Online.Quiz.App.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
 
 @Entity
 @Table(name = "questions")
@@ -20,15 +19,12 @@ public class Question {
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    @Column(nullable = false)
-    private String questionText;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String question;
 
-    @ElementCollection
-    @CollectionTable(name = "question_options", joinColumns = @JoinColumn(name = "question_id"))
-    @Column(name = "option_text")
-    private List<String> options;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String options; // Store as JSON string: ["option1","option2","option3","option4"]
 
     @Column(nullable = false)
     private String correctAnswer;
 }
-
