@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/quizzes")
+@RequestMapping("/quizzes")
 @RequiredArgsConstructor
 public class QuizController {
     private final QuizService quizService;
