@@ -32,7 +32,6 @@ public class AuthService {
             throw new BadRequestException("Email already registered");
         }
 
-        // Create new user
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -41,7 +40,6 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-        // Generate JWT token
         UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getEmail());
         String token = jwtUtil.generateToken(userDetails);
 
@@ -54,7 +52,6 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
-        // Authenticate user
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
