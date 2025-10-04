@@ -202,6 +202,13 @@ On first startup, the application automatically loads:
 
 ## 📚 API Documentation
 
+### Swagger UI
+
+![Swagger Overview](docs/screenshots/swagger-overview.png)
+
+Access interactive documentation at: http://localhost:8080/swagger-ui.html
+
+![Swagger Authentication](docs/screenshots/swagger-auth.png)
 ### Base URL
 ```
 http://localhost:8080/api
